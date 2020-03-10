@@ -14,11 +14,10 @@ int main(int argc, const char **argv) {
     if (setuid(0) < 0) {
         if (errno == EPERM) {
             fprintf(stderr, "Executable %s needs the setuid bit to work properly\n", *argv);
-            goto exit;
         } else {
             perror("setuid");
-            goto exit;
         }
+        goto exit;
     }
     config_t config;
     if (parse_config(&config) < 0) {
@@ -27,7 +26,11 @@ int main(int argc, const char **argv) {
     }
     proc_tree_t *tree;
     if (ps_tree(&tree, config.sudo) < 0) {
-        perror("ps_tree");
+        if (errno == ESRCH) {
+            fprintf(stderr, "%s can only be run after 'sudo' has been run.\n", *argv);
+        } else {
+            perror("ps_tree");
+        }
         goto exit;
     }
     policy_result_t res = pr_undefined;
