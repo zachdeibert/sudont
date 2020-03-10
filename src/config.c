@@ -102,6 +102,7 @@ void config_free(config_t config) {
     }
     for (policy_list_t *it = config.policies; it; ) {
         policy_list_t *tmp = it->next;
+        policy_free(it->policy);
         free(it);
         it = tmp;
     }

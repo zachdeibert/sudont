@@ -19,6 +19,7 @@ typedef struct {
 
 int policy_parse(policy_t *policy, int argc, const char **argv);
 void policy_eval(policy_t policy, proc_tree_t *ps, policy_result_t *result);
+void policy_free(policy_t policy);
 
 #ifndef CONCAT
 #define _CONCAT(a, b) a ## b
