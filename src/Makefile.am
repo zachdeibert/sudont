@@ -9,3 +9,7 @@ sudont_SOURCES = \
     policy.c \
     proc.c \
     sudo.c
+
+install-exec-hook:
+	chown root $(bindir)/sudont
+	chmod u+s $(bindir)/sudont
