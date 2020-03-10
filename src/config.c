@@ -26,7 +26,8 @@ int parse_config(config_t *config) {
     char line[MAX_LINE_LENGTH + 1];
     const char *argv[MAX_ARGS];
     while (!feof(file)) {
-        fscanf(file, "%" STR(MAX_LINE_LENGTH) "[^\n]\n", line);
+        memset(line, 0, sizeof(line));
+        fgets(line, MAX_LINE_LENGTH, file);
         if (strnlen(line, MAX_LINE_LENGTH + 1) >= MAX_LINE_LENGTH) {
             fputs("Lines in config file are too long.\n", stderr);
             goto io_error;
@@ -35,9 +36,12 @@ int parse_config(config_t *config) {
         int is_reading_arg = 0;
         for (char *it = line; *it; ++it) {
             switch (*it) {
+                case '#':
+                    goto comment;
                 case ' ':
                 case '\t':
                 case '\r':
+                case '\n':
                     if (is_reading_arg) {
                         is_reading_arg = 0;
                         *it = 0;
@@ -54,6 +58,13 @@ int parse_config(config_t *config) {
                     }
                     break;
             }
+            if (0) {
+                comment:
+                break;
+            }
+        }
+        if (argc == 0) {
+            continue;
         }
         if (strcmp(*argv, "sudo") == 0) {
             if (argc == 2) {
