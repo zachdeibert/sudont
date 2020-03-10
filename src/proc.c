@@ -11,10 +11,10 @@
 #include "config.h"
 #include "proc.h"
 
-int ps_scan(pid_t pid, proc_tree_t **tree, sudo_list_t *sudo);
+int ps_scan(pid_t pid, proc_tree_t **tree, sudo_list_t *sudo, int last);
 
 int ps_tree(proc_tree_t **tree, sudo_list_t *sudo) {
-    return ps_scan(getpid(), tree, sudo);
+    return ps_scan(getpid(), tree, sudo, 0);
 }
 
 void ps_tree_free(proc_tree_t *tree) {
@@ -26,7 +26,7 @@ void ps_tree_free(proc_tree_t *tree) {
     }
 }
 
-int ps_scan(pid_t pid, proc_tree_t **tree, sudo_list_t *sudo) {
+int ps_scan(pid_t pid, proc_tree_t **tree, sudo_list_t *sudo, int last) {
     *tree = (proc_tree_t *) malloc(sizeof(proc_tree_t));
     if (!*tree) {
         errno = ENOMEM;
@@ -88,13 +88,16 @@ int ps_scan(pid_t pid, proc_tree_t **tree, sudo_list_t *sudo) {
         errno = ESRCH;
         return -1;
     }
+    if (last) {
+        (*tree)->parent = NULL;
+        return 0;
+    }
     for (sudo_list_t *it = sudo; it; it = it->next) {
         if (strcmp(it->sudo_path, (*tree)->filename) == 0) {
-            (*tree)->parent = NULL;
-            return 0;
+            last = 1;
         }
     }
-    if (ps_scan(ppid, &(*tree)->parent, sudo) < 0) {
+    if (ps_scan(ppid, &(*tree)->parent, sudo, last) < 0) {
         int e = errno;
         free(tmp);
         free(*tree);
