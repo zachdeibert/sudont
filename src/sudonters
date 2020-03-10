@@ -1,0 +1,10 @@
+# SuDon't Configuration File
+#
+# Valid paths to the sudo executable:
+sudo /usr/bin/sudo
+sudo /bin/sudo
+
+# Script to determine if sudont should be allowed:
+deny # Start by setting the default action to deny all requests
+allow_user root # If the user running sudont is root, allow the request
+allow_interactive # If sudont was run directly from a 'sudo -i' shell, allow it
