@@ -25,6 +25,7 @@ int parse_config(config_t *config) {
     }
     char line[MAX_LINE_LENGTH + 1];
     const char *argv[MAX_ARGS];
+    policy_list_t **tail = &config->policies;
     while (!feof(file)) {
         memset(line, 0, sizeof(line));
         fgets(line, MAX_LINE_LENGTH, file);
@@ -93,12 +94,13 @@ int parse_config(config_t *config) {
                 err = ENOMEM;
                 goto io_error;
             }
-            node->next = config->policies;
+            node->next = NULL;
             if (policy_parse(&node->policy, argc, argv, config->sudo) < 0) {
                 err = errno;
                 goto io_error;
             }
-            config->policies = node;
+            *tail = node;
+            tail = &node->next;
         }
     }
     fclose(file);
