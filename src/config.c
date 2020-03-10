@@ -83,7 +83,7 @@ int parse_config(config_t *config) {
                 goto io_error;
             }
             node->next = config->policies;
-            if (policy_parse(&node->policy, argc, argv) < 0) {
+            if (policy_parse(&node->policy, argc, argv, config->sudo) < 0) {
                 err = errno;
                 goto io_error;
             }

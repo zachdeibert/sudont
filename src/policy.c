@@ -4,12 +4,12 @@
 #include "proc-tree.h"
 #include "policy.h"
 
-int policy_parse(policy_t *policy, int argc, const char **argv) {
+int policy_parse(policy_t *policy, int argc, const char **argv, sudo_list_t *sudo) {
 #define POLICY_TYPE(argv0, name) \
     do { \
         if (strcmp(argv[0], argv0) == 0) { \
             policy->action = name; \
-            policy->context = CONCAT(name, _init)(argc, argv); \
+            policy->context = CONCAT(name, _init)(argc, argv, sudo); \
             return 0; \
         } \
     } while (0)

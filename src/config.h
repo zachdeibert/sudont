@@ -1,7 +1,7 @@
 #ifndef SUDONT_CONFIG_H
 #define SUDONT_CONFIG_H
 
-#include "policy.h"
+#include "policy-type.h"
 
 #define DEFAULT_CONFIG_FILE "/etc/sudonters"
 #define MAX_LINE_LENGTH 1024
