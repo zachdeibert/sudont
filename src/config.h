@@ -4,6 +4,8 @@
 #include "policy.h"
 
 #define DEFAULT_CONFIG_FILE "/etc/sudonters"
+#define MAX_LINE_LENGTH 1024
+#define MAX_ARGS 8
 
 struct _sudo_list_t;
 typedef struct _sudo_list_t sudo_list_t;
